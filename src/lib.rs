@@ -5,7 +5,7 @@ use syn::{Ident, ItemFn, LitInt, parse_macro_input};
 #[proc_macro_attribute]
 pub fn main(args: TokenStream, input: TokenStream) -> TokenStream {
     let day = parse_macro_input!(args as LitInt);
-    let input_path = format!("../../inputs/{}.in", day.to_string());
+    let input_path = format!("../../inputs/{}.in", day);
 
     let mut aoc_solution = parse_macro_input!(input as ItemFn);
     aoc_solution.sig.ident = Ident::new("aoc_solution", aoc_solution.sig.ident.span());

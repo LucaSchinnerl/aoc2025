@@ -23,8 +23,7 @@ fn create_range_iterator(input: &str) -> impl Iterator<Item = u64> {
     input
         .split(',')
         .map(parse_range)
-        .map(|range| range.start..=range.end)
-        .flatten()
+        .flat_map(|range| range.start..=range.end)
 }
 
 fn is_valid_id(id: u64, max_repeats: Option<usize>) -> bool {
@@ -34,7 +33,7 @@ fn is_valid_id(id: u64, max_repeats: Option<usize>) -> bool {
     // Try all possible pattern lengths
     for pat_len in 1..=len / 2 {
         // Pattern length must divide the total length
-        if len % pat_len != 0 {
+        if !len.is_multiple_of(pat_len) {
             continue;
         }
 
@@ -45,10 +44,10 @@ fn is_valid_id(id: u64, max_repeats: Option<usize>) -> bool {
         }
 
         // If there is a max_repeats, enforce it
-        if let Some(limit) = max_repeats {
-            if repeats > limit {
-                continue;
-            }
+        if let Some(limit) = max_repeats
+            && repeats > limit
+        {
+            continue;
         }
 
         let pattern = &digits[..pat_len];
