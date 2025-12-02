@@ -11,6 +11,9 @@ proc-macro = true
 [profile.dev]
 overflow-checks = false
 
+[profile.release]
+debug = true
+
 [dependencies]
 rayon = "1.11"
 itoa = "1.0.15"
