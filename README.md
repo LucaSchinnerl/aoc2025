@@ -6,6 +6,12 @@ This repository contains my solutions to the Advent of Code 2025 programming puz
 
 To run the solutions, you will need to have Rust installed on your machine.
 
+make sure you have the pre-commit hooks installed
+
+```sh
+pre-commit install
+```
+
 ## Usage
 
 ```sh
