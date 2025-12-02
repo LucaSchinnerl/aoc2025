@@ -1,6 +1,6 @@
 # Advent of Code 2025
 
-[![CI](https://github.com/LucaSchinnerl/aoc2025/actions/workflows/ci.yml/badge.svg)](https://github.com/LucaSchinnerl/aoc2025/actions/workflows/ci.yml)
+[![CI](https://github.com/LucaSchinnerl/aoc2025/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/LucaSchinnerl/aoc2025/actions/workflows/ci.yml?query=branch%3Amain)
 
 This repository contains my solutions to the Advent of Code 2025 programming puzzles.
 
