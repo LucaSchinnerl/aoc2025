@@ -13,6 +13,7 @@ overflow-checks = false
 
 [dependencies]
 rayon = "1.11"
+itoa = "1.0.15"
 
 # lib proc-macro dependencies
 syn = { version = "2.0.111", features = ["full"] }
