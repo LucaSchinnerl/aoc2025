@@ -1,0 +1,20 @@
+[package]
+name = "aoc"
+version = "0.1.0"
+authors = ["Luca Schinnerl"]
+edition = "2024"
+default-run = "aoc"
+
+[lib]
+proc-macro = true
+
+[profile.dev]
+overflow-checks = false
+
+[dependencies]
+rayon = "1.11"
+
+# lib proc-macro dependencies
+syn = { version = "2.0.111", features = ["full"] }
+quote = "1.0.42"
+itertools = "0.14.0"
