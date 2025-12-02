@@ -27,28 +27,63 @@ fn create_range_iterator(input: &str) -> impl Iterator<Item = u64> {
         .flatten()
 }
 
-fn is_valid_id(id: u64) -> bool {
-    // check if range is repeating
+fn is_valid_id(id: u64, max_repeats: Option<usize>) -> bool {
     let digits = id.to_string();
-
     let len = digits.len();
-    if len % 2 != 0 {
-        return true;
+
+    // Try all possible pattern lengths
+    for pat_len in 1..=len / 2 {
+        // Pattern length must divide the total length
+        if len % pat_len != 0 {
+            continue;
+        }
+
+        let repeats = len / pat_len;
+        // Must repeat at least twice to be considered a repeating pattern
+        if repeats < 2 {
+            continue;
+        }
+
+        // If there is a max_repeats, enforce it
+        if let Some(limit) = max_repeats {
+            if repeats > limit {
+                continue;
+            }
+        }
+
+        let pattern = &digits[..pat_len];
+        let mut ok = true;
+        let mut pos = pat_len;
+
+        // Check if the entire string is that pattern repeated
+        while pos < len {
+            let end = pos + pat_len;
+            if &digits[pos..end] != pattern {
+                ok = false;
+                break;
+            }
+            pos = end;
+        }
+
+        // Found a forbidden repeating pattern
+        if ok {
+            return false;
+        }
     }
 
-    let mid = len / 2;
-    &digits[..mid] != &digits[mid..]
+    // No forbidden repeating pattern found
+    true
 }
 
 fn part_one(input: &str) -> u64 {
     create_range_iterator(input)
-        .filter(|&id| !is_valid_id(id))
+        .filter(|&id| !is_valid_id(id, Some(2)))
         .sum()
 }
 
 fn part_two(input: &str) -> u64 {
     create_range_iterator(input)
-        .filter(|&id| is_valid_id(id))
+        .filter(|&id| !is_valid_id(id, None))
         .sum()
 }
 
@@ -65,6 +100,6 @@ mod tests {
 
     #[test]
     fn test_part_two() {
-        assert_eq!(part_two(EXAMPLE_INPUT), 0);
+        assert_eq!(part_two(EXAMPLE_INPUT), 4174379265);
     }
 }
