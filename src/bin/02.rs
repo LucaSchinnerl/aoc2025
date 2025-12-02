@@ -1,0 +1,70 @@
+#[aoc::main(02)]
+fn main(input: &str) -> (u64, u64) {
+    let (part_one, part_two) = rayon::join(|| part_one(input), || part_two(input));
+
+    (part_one, part_two)
+}
+
+struct Range {
+    start: u64,
+    end: u64,
+}
+
+fn parse_range(range: &str) -> Range {
+    // input in the format of "328412-412772"
+    let (start, end) = range.split_once('-').unwrap();
+    Range {
+        start: start.parse().unwrap(),
+        end: end.parse().unwrap(),
+    }
+}
+
+fn create_range_iterator(input: &str) -> impl Iterator<Item = u64> {
+    input
+        .split(',')
+        .map(parse_range)
+        .map(|range| range.start..=range.end)
+        .flatten()
+}
+
+fn is_valid_id(id: u64) -> bool {
+    // check if range is repeating
+    let digits = id.to_string();
+
+    let len = digits.len();
+    if len % 2 != 0 {
+        return true;
+    }
+
+    let mid = len / 2;
+    &digits[..mid] != &digits[mid..]
+}
+
+fn part_one(input: &str) -> u64 {
+    create_range_iterator(input)
+        .filter(|&id| !is_valid_id(id))
+        .sum()
+}
+
+fn part_two(input: &str) -> u64 {
+    create_range_iterator(input)
+        .filter(|&id| is_valid_id(id))
+        .sum()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE_INPUT: &str = "11-22,95-115,998-1012,1188511880-1188511890,222220-222224,1698522-1698528,446443-446449,38593856-38593862,565653-565659,824824821-824824827,2121212118-2121212124";
+
+    #[test]
+    fn test_part_one() {
+        assert_eq!(part_one(EXAMPLE_INPUT), 1227775554);
+    }
+
+    #[test]
+    fn test_part_two() {
+        assert_eq!(part_two(EXAMPLE_INPUT), 0);
+    }
+}
