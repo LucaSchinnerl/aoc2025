@@ -38,10 +38,6 @@ fn is_valid_id(id: u64, max_repeats: Option<usize>) -> bool {
         }
 
         let repeats = len / pat_len;
-        // Must repeat at least twice to be considered a repeating pattern
-        if repeats < 2 {
-            continue;
-        }
 
         // If there is a max_repeats, enforce it
         if let Some(limit) = max_repeats
