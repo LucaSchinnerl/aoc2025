@@ -18,28 +18,31 @@ fn solve(input: &str) -> (u64, u64) {
                 .map(|c| c.to_digit(10).unwrap() as u64)
                 .collect();
 
-            // Part 1
-            let prefix = &digits[..digits.len() - 1];
-            let tens_digit = *prefix.iter().max().unwrap();
-            let idx_of_max_tens = prefix.iter().position(|&d| d == tens_digit).unwrap();
-            let ones_digit = digits[idx_of_max_tens + 1..].iter().copied().max().unwrap();
-            let part_one = tens_digit * 10 + ones_digit;
-
-            // Part 2
-            let target_len = 12usize.min(digits.len());
-            let mut to_remove = digits.len() - target_len;
-            let mut stack: Vec<u64> = Vec::with_capacity(digits.len());
-            for &d in &digits {
-                while to_remove > 0 && !stack.is_empty() && *stack.last().unwrap() < d {
-                    stack.pop();
-                    to_remove -= 1;
-                }
-                stack.push(d);
-            }
-            if stack.len() > target_len {
-                stack.truncate(target_len);
-            }
-            let part_two = stack.into_iter().fold(0u64, |acc, digit| acc * 10 + digit);
+            let (part_one, part_two) = rayon::join(
+                || {
+                    let prefix = &digits[..digits.len() - 1];
+                    let tens_digit = *prefix.iter().max().unwrap();
+                    let idx_of_max_tens = prefix.iter().position(|&d| d == tens_digit).unwrap();
+                    let ones_digit = digits[idx_of_max_tens + 1..].iter().copied().max().unwrap();
+                    tens_digit * 10 + ones_digit
+                },
+                || {
+                    let target_len = 12usize.min(digits.len());
+                    let mut to_remove = digits.len() - target_len;
+                    let mut stack: Vec<u64> = Vec::with_capacity(digits.len());
+                    for &d in &digits {
+                        while to_remove > 0 && !stack.is_empty() && *stack.last().unwrap() < d {
+                            stack.pop();
+                            to_remove -= 1;
+                        }
+                        stack.push(d);
+                    }
+                    if stack.len() > target_len {
+                        stack.truncate(target_len);
+                    }
+                    stack.into_iter().fold(0u64, |acc, digit| acc * 10 + digit)
+                },
+            );
             (part_one, part_two)
         })
         .reduce(|| (0, 0), |a, b| (a.0 + b.0, a.1 + b.1))
