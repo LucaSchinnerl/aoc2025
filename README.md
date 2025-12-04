@@ -20,3 +20,15 @@ pre-commit install
 cargo run --release --bin DAY # run a specific day
 cargo run --release           # run all days
 ```
+
+## Profiling
+
+```sh
+cargo instruments -t "Time Profiler" --release --bin DAY
+```
+
+## Benchmarking
+
+```sh
+hyperfine --warmup 2 --runs 5 "./target/release/DAY"
+```
