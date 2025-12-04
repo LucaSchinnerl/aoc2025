@@ -32,3 +32,8 @@ cargo instruments -t "Time Profiler" --release --bin DAY
 ```sh
 hyperfine --warmup 2 --runs 5 "./target/release/DAY"
 ```
+
+## Benchmarks
+
+<!-- benchmarks-start -->
+<!-- benchmarks-end -->
