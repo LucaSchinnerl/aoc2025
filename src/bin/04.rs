@@ -117,10 +117,6 @@ fn solve(input: &str) -> (u32, u32) {
         let current_index = queue[head];
         head += 1;
 
-        // If already dead, skip (though our logic shouldn't add dead cells)
-        if !grid.is_active(current_index) {
-            continue;
-        }
         grid.deactivate(current_index);
 
         // Notify neighbors of the death
