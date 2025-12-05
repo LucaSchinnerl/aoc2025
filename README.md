@@ -38,9 +38,10 @@ hyperfine --warmup 2 --runs 5 "./target/release/DAY"
 <!-- benchmarks-start -->
 | Day | Time |
 | --- | --- |
-| 01 | 496μs |
-| 02 | 299μs |
-| 03 | 428μs |
-| 04 | 466μs |
-| **Total** | **1ms** |
+| 01 | 433μs |
+| 02 | 369μs |
+| 03 | 407μs |
+| 04 | 475μs |
+| 05 | 537μs |
+| **Total** | **2ms** |
 <!-- benchmarks-end -->
