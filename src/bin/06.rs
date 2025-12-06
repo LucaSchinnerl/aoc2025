@@ -5,23 +5,13 @@ fn main(input: &str) -> (u64, u64) {
     (part_one, part_two)
 }
 
-struct Input {
-    grid: Vec<Vec<u64>>,
-    instructions: Vec<Instruction>,
-}
-
-#[derive(Debug)]
 enum Instruction {
     Add,
     Multiply,
 }
 
-fn parse_input(input: &str) -> Input {
-    let first_line = input.lines().find(|l| !l.trim().is_empty()).unwrap();
-    let num_columns = first_line.split_whitespace().count();
-    let mut grid = vec![Vec::new(); num_columns];
+fn parse_instructions(input: &str) -> Vec<Instruction> {
     let mut instructions = Vec::new();
-
     for line in input.lines() {
         if line.contains("+") || line.contains("*") {
             for instruction in line.split_whitespace() {
@@ -31,39 +21,28 @@ fn parse_input(input: &str) -> Input {
                     Instruction::Multiply
                 });
             }
-        } else {
-            for (j, num) in line.split_whitespace().enumerate() {
-                grid[j].push(num.parse::<u64>().unwrap());
-            }
         }
     }
-    Input { grid, instructions }
+    instructions
 }
 
-fn part_one(input: &str) -> u64 {
-    let parsed_input = parse_input(input);
-    let mut res = 0;
-    for (instruction, values) in parsed_input
-        .instructions
-        .iter()
-        .zip(parsed_input.grid.iter())
-    {
-        let mut current_value = 0;
-        match instruction {
-            Instruction::Add => {
-                current_value += values.iter().sum::<u64>();
-            }
-            Instruction::Multiply => {
-                current_value += values.iter().product::<u64>();
-            }
+fn parse_part_one_input(input: &str) -> Vec<Vec<u64>> {
+    let first_line = input.lines().find(|l| !l.trim().is_empty()).unwrap();
+    let num_columns = first_line.split_whitespace().count();
+    let mut grid = vec![Vec::new(); num_columns];
+
+    for line in input.lines() {
+        if line.contains("+") || line.contains("*") {
+            continue;
         }
-        res += current_value;
+        for (j, num) in line.split_whitespace().enumerate() {
+            grid[j].push(num.parse::<u64>().unwrap());
+        }
     }
-    res
+    grid
 }
 
-fn part_two(input: &str) -> u64 {
-    let instructions = parse_input(input).instructions;
+fn parse_part_two_input(input: &str) -> Vec<Vec<u64>> {
     let mut col_parse = Vec::<Vec<u64>>::new();
     col_parse.push(Vec::new());
     for i in 0..input.lines().next().unwrap().len() {
@@ -83,8 +62,13 @@ fn part_two(input: &str) -> u64 {
                 .push(string_number.parse::<u64>().unwrap());
         }
     }
+    col_parse.retain(|v| !v.is_empty());
+    col_parse
+}
+
+fn calculate_result(instructions: &[Instruction], grid: &[Vec<u64>]) -> u64 {
     let mut res = 0;
-    for (instruction, values) in instructions.iter().zip(col_parse.iter()) {
+    for (instruction, values) in instructions.iter().zip(grid.iter()) {
         let mut current_value = 0;
         match instruction {
             Instruction::Add => {
@@ -97,6 +81,18 @@ fn part_two(input: &str) -> u64 {
         res += current_value;
     }
     res
+}
+
+fn part_one(input: &str) -> u64 {
+    let instructions = parse_instructions(input);
+    let grid = parse_part_one_input(input);
+    calculate_result(&instructions, &grid)
+}
+
+fn part_two(input: &str) -> u64 {
+    let instructions = parse_instructions(input);
+    let grid = parse_part_two_input(input);
+    calculate_result(&instructions, &grid)
 }
 
 #[cfg(test)]
